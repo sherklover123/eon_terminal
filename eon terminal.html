@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eon Terminal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+            position: relative;
+        }
+        .login-container, .ip-container, .loading-container, .settings-container, .security-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            width: 300px;
+            display: none; /* Hide initially */
+        }
+        .login-container img, .ip-container img, .loading-container img, .settings-container img, .security-container img {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 50px; /* Adjust size as needed */
+            height: 50px; /* Adjust size as needed */
+        }
+        .login-container h2, .ip-container h2, .loading-container h2, .settings-container h2, .security-container h1 {
+            margin-top: 0;
+            margin-left: 70px; /* Space for image */
+        }
+        .login-container input, .ip-container input, .settings-container input, .security-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .login-container button, .ip-container button, .settings-container button, .security-container button {
+            padding: 10px;
+            width: 100%;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .login-container button:hover, .ip-container button:hover, .settings-container button:hover, .security-container button:hover {
+            background-color: #0056b3;
+        }
+        .message, .ip-message {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .message {
+            color: red;
+        }
+        .ip-message {
+            color: green;
+        }
+        .loading-container {
+            text-align: center;
+        }
+        .loading-container h2 {
+            margin-top: 50px; /* Add margin to adjust for loading text */
+        }
+        .settings-container {
+            text-align: left;
+        }
+        .settings-container label {
+            display: block;
+            margin: 10px 0;
+        }
+        .settings-container input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .restart-message {
+            margin-top: 10px;
+            color: red;
+            font-weight: bold;
+        }
+        .side-buttons {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            display: none; /* Initially hidden */
+            flex-direction: column;
+            align-items: center;
+        }
+        .side-buttons button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            margin: 5px 0;
+            width: 40px; /* Smaller button width */
+            height: 40px; /* Smaller button height */
+            padding: 0;
+        }
+        .side-buttons img {
+            width: 100%; /* Make image fill button */
+            height: 100%; /* Make image fill button */
+        }
+        .ip-select-container {
+            display: flex;
+            flex-direction: column;
+        }
+        .ip-select-container label {
+            margin: 10px 0;
+        }
+        .ip-select-container select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .security-container {
+            text-align: center;
+        }
+        .security-container input {
+            width: calc(100% - 22px); /* Adjust width to fit within padding */
+        }
+        .link {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Container -->
+    <div class="login-container" id="loginContainer">
+        <img src="https://pbs.twimg.com/media/FCUdwI4X0AE459G.jpg" alt="Eon Logo">
+        <h2>Unesite Username i Lozinku</h2>
+        <form id="loginForm">
+            <input type="text" id="username" placeholder="Username" name="username" required>
+            <input type="password" id="password" placeholder="Lozinka" name="password" required>
+            <button type="submit">Login</button>
+            <div class="message" id="message"></div>
+            <div id="linkContainer">
+                <a href="security.html" class="link">Forgot your password?</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- IP Container -->
+    <div class="ip-container" id="ipContainer">
+        <img src="https://pbs.twimg.com/media/FCUdwI4X0AE459G.jpg" alt="Eon Logo">
+        <h2>Unesite IP adresu</h2>
+        <form id="ipForm">
+            <div class="ip-select-container">
+                <label for="ipSelect">* IP adrese blizu vas *</label>
+                <select id="ipSelect">
+                    <option value="" disabled selected>Select IP Address</option>
+                    <option value="192.168.1.1">192.168.1.1</option>
+                    <option value="10.0.0.1">10.0.0.1</option>
+                    <option value="172.16.0.1">172.16.0.1</option>
+                    <option value="152.22.9.1">152.22.9.1</option>
+                </select>
+            </div>
+            <input type="text" id="ipAddress" placeholder="IP Address" name="ipAddress" required>
+            <button type="submit">Submit</button>
+            <div class="ip-message" id="ipMessage"></div>
+        </form>
+    </div>
+
+    <!-- Loading Container -->
+    <div class="loading-container" id="loadingContainer">
+        <h2>Učitavanje...</h2>
+    </div>
+
+    <!-- Settings Container -->
+    <div class="settings-container" id="settingsContainer">
+        <h2>System Settings</h2>
+        <label>
+            <input type="checkbox" id="setting1">
+            SLIKA
+        </label>
+        <label>
+            <input type="checkbox" id="setting2">
+            TON
+        </label>
+        <label>
+            <input type="checkbox" id="setting3">
+            PRIJENOS PROGRAMA
+        </label>
+        <label>
+            <input type="checkbox" id="setting4">
+            INTERNET POVEZANOST
+        </label>
+        <div class="restart-message" id="restartMessage" style="display: none;">
+            Da bi se postavke primjenile restartujte uređaj
+        </div>
+    </div>
+
+    <!-- Security Question Container -->
+    <div class="security-container" id="securityQuestionContainer">
+        <img src="https://pbs.twimg.com/media/FCUdwI4X0AE459G.jpg" alt="Eon Logo">
+        <h1>Security Question</h1>
+        <p>Koje je vaš username?</p>
+        <input type="text" id="securityUsername" placeholder="Enter your username">
+        <button onclick="checkAnswer()">Submit</button>
+        <div class="message" id="securityMessage"></div>
+    </div>
+
+    <!-- Side Buttons -->
+    <div class="side-buttons">
+        <button class="reset-button" id="resetButton">
+            <img src="https://cdn-icons-png.flaticon.com/512/2618/2618245.png" alt="Reset">
+        </button>
+        <button class="logout-button" id="logoutButton">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGSbSS9rEJ8DvvWA-JG1KHyLSr7GXkT_o1Fg&s" alt="Logout">
+        </button>
+    </div>
+
+    <script>
+        // Configuration state for each IP address
+        var ipConfigurations = {
+            '192.168.1.1': { setting1: true, setting2: true, setting3: true, setting4: true },
+            '10.0.0.1': { setting1: false, setting2: false, setting3: true, setting4: true },
+            '172.16.0.1': { setting1: true, setting2: false, setting3: false, setting4: true },
+            '152.22.9.1': { setting1: false, setting2: true, setting3: true, setting4: true }
+        };
+
+        // Event listener for login form submission
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            var message = document.getElementById('message');
+            var loginContainer = document.getElementById('loginContainer');
+            var ipContainer = document.getElementById('ipContainer');
+            var securityQuestionContainer = document.getElementById('securityQuestionContainer');
+            var linkContainer = document.getElementById('linkContainer');
+
+            var correctUsername = 'babaluka123';
+            var correctPassword = 'imamdvijenoge';
+
+            if (username === correctUsername && password === correctPassword) {
+                message.style.color = 'green';
+                message.textContent = 'Login successful!';
+                loginContainer.style.display = 'none';
+                ipContainer.style.display = 'block'; // Show IP form
+            } else {
+                message.style.color = 'red';
+                message.textContent = 'Incorrect username or password.';
+                linkContainer.style.display = 'block'; // Show the link
+            }
+        });
+
+        // Event listener for IP address form submission
+        document.getElementById('ipForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var ipAddress = document.getElementById('ipAddress').value;
+            var ipMessage = document.getElementById('ipMessage');
+            var ipContainer = document.getElementById('ipContainer');
+            var loadingContainer = document.getElementById('loadingContainer');
+
+            var ipDatabase = Object.keys(ipConfigurations);
+
+            if (ipDatabase.includes(ipAddress)) {
+                ipMessage.style.color = 'green';
+                ipMessage.textContent = 'IP Address recognized!';
+                ipContainer.style.display = 'none';
+                loadingContainer.style.display = 'block';
+
+                var loadingTime = Math.floor(Math.random() * 10) + 1;
+                var serverBusyMessageShown = false;
+                var loadingTextElement = document.querySelector('.loading-container h2');
+
+                var timeoutId = setTimeout(function() {
+                    if (!serverBusyMessageShown) {
+                        loadingContainer.style.display = 'none';
+                        var settingsContainer = document.getElementById('settingsContainer');
+                        settingsContainer.style.display = 'block';
+                        document.querySelector('.side-buttons').style.display = 'flex';
+                        applySettings(ipAddress);
+                    }
+                }, loadingTime * 1000);
+
+                if (loadingTime > 5) {
+                    serverBusyMessageShown = true;
+                    loadingTextElement.textContent = 'Serveri su zauzeti molimo sačekajte';
+                    setTimeout(function() {
+                        loadingContainer.style.display = 'none';
+                        var settingsContainer = document.getElementById('settingsContainer');
+                        settingsContainer.style.display = 'block';
+                        document.querySelector('.side-buttons').style.display = 'flex';
+                        applySettings(ipAddress);
+                    }, (loadingTime + 2) * 1000);
+                } else {
+                    loadingTextElement.textContent = 'Učitavanje...';
+                }
+            } else {
+                ipMessage.style.color = 'red';
+                ipMessage.textContent = 'Unknown IP Address.';
+            }
+        });
+
+        // Event listener for IP address selector change
+        document.getElementById('ipSelect').addEventListener('change', function() {
+            var selectedIp = this.value;
+            document.getElementById('ipAddress').value = selectedIp;
+        });
+
+        // Apply settings specific to the selected IP address
+        function applySettings(ipAddress) {
+            var settings = ipConfigurations[ipAddress];
+            document.getElementById('setting1').checked = settings.setting1;
+            document.getElementById('setting2').checked = settings.setting2;
+            document.getElementById('setting3').checked = settings.setting3;
+            document.getElementById('setting4').checked = settings.setting4;
+        }
+
+        // Display a restart message when any switch is changed
+        document.querySelectorAll('.settings-container input[type="checkbox"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                document.getElementById('restartMessage').style.display = 'block';
+            });
+        });
+
+        // Handle logout button click
+        document.getElementById('logoutButton').addEventListener('click', function() {
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('ipAddress').value = '';
+            document.getElementById('message').textContent = '';
+            document.getElementById('ipMessage').textContent = '';
+            document.getElementById('restartMessage').style.display = 'none';
+            document.getElementById('settingsContainer').style.display = 'none';
+            document.getElementById('ipContainer').style.display = 'none';
+            document.getElementById('securityQuestionContainer').style.display = 'none'; // Hide security question
+            document.querySelector('.side-buttons').style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'block';
+        });
+
+        // Handle reset button click
+        document.getElementById('resetButton').addEventListener('click', function() {
+            document.getElementById('message').textContent = '';
+            document.getElementById('ipMessage').textContent = '';
+            document.getElementById('restartMessage').style.display = 'none';
+            alert('Settings have been applied.');
+        });
+
+        // Handle security question form submission
+        function checkAnswer() {
+            var username = document.getElementById('securityUsername').value;
+            var correctAnswer = "babaluka123";
+            var password = "imamdvijenoge"; // Updated password
+
+            var message = document.getElementById('securityMessage');
+
+            if (username === correctAnswer) {
+                message.style.color = 'green';
+                message.textContent = "Your password is: " + password;
+                document.getElementById('securityQuestionContainer').style.display = 'none'; // Hide security question
+                document.getElementById('ipContainer').style.display = 'block'; // Show IP form
+            } else {
+                message.style.color = 'red';
+                message.textContent = "Incorrect answer.";
+            }
+        }
+
+        // Show the login container initially
+        document.getElementById('loginContainer').style.display = 'block';
+    </script>
+</body>
+</html>
